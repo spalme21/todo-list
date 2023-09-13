@@ -1,6 +1,6 @@
 import Task from "./task";
 
-class Project {
+export default class Project {
   constructor(title) {
     this.title = title;
     this.tasks = [];
@@ -10,5 +10,3 @@ class Project {
     this.tasks.append(new Task(title, dueDate, priority, notes));
   }
 }
-
-export default Project;
