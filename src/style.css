@@ -10,6 +10,7 @@ button {
   background: #b4b3b4;
   padding: 10px 30px 10px 30px;
   font-size: 1rem;
+  text-align: center;
 }
 
 header {
@@ -39,23 +40,36 @@ header h1 {
 #sidenav button {
   position: relative;
   left: 30px;
+  height: 2rem;
+  width: 80%;
+  padding: auto;
 }
 
 #sidenav button:hover {
   background: #9e9e9e;
 }
 
-.form-popup {
-  display: none;
-  position: relative;
-  left: 30px;
+#project-list .project-form-button {
+  width: 40%;
+  
 }
 
-/* .form-container {
-  border: solid 1px black;
-  position: relative;
-  left: 30px;
-} */
+#project-list {
+  border: solid black 1px;
+  display: grid;
+  gap: 5px;
+  padding: 5px;
+  margin: auto;
+}
+
+.project-link {
+  background: #cac8c9;
+}
+
+.form-popup {
+  display: none;
+  margin: auto;
+}
 
 .form-popup input {
   width: 60%;
@@ -64,11 +78,6 @@ header h1 {
   border: none  ;
 }
 
-.form-buttons {
-  position: relative;
-  left: -10px;
-}
-
 .form-buttons button {
-  margin-left: 5px;
+  float: left;
 }
