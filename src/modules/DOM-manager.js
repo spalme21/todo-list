@@ -4,6 +4,7 @@ export default class DOMManager {
   constructor() {
     this.projects = [];
     this.activeProject = null;
+    this.boundActivateProject = this.activateProject.bind(this);
   }
   
   loadPage() {
@@ -116,13 +117,19 @@ export default class DOMManager {
   }
 
   createProjectLink(project, index) {
-    console.log(project);
     const projectButton = document.createElement("button");
     projectButton.type = "button";
-    projectButton.id = `project-${index}`;
+    projectButton.dataset.index = index;
     projectButton.classList.add("project-link");
     projectButton.textContent = project.title;
+    projectButton.addEventListener("click", this.boundActivateProject);
     return projectButton;
+  }
+
+  activateProject(e) {
+    const index = e.target.dataset.index;
+    this.activeProject = this.projects[index];
+    this.loadPage();
   }
 
   /* Task List */
