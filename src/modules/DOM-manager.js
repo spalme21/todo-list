@@ -3,6 +3,7 @@ import Project from "./project";
 export default class DOMManager {
   constructor() {
     this.projects = [];
+    this.activeProject = null;
   }
   
   loadPage() {
@@ -10,7 +11,10 @@ export default class DOMManager {
     body.textContent = "";
     body.appendChild(this.createHeader());
     body.appendChild(this.createSidebar());
+    body.appendChild(this.createTaskContainer());
   }
+
+  /* Header */
 
   createHeader() {
     const header = document.createElement("header");
@@ -20,6 +24,8 @@ export default class DOMManager {
     header.appendChild(title);  
     return header;
   }
+
+  /* Sidebar */
 
   createSidebar() {
     const sidenav = document.createElement("div");
@@ -75,11 +81,7 @@ export default class DOMManager {
     createButton.classList.add("project-form-button");
     createButton.textContent = "Create";
     createButton.addEventListener("click", () => {
-      const project = new Project(
-        document.getElementById("project-name").value
-      );
-      this.projects.push(project);
-      this.closeForm();
+      this.createProject();
       this.loadPage();
     });
     buttons.appendChild(createButton);
@@ -105,13 +107,118 @@ export default class DOMManager {
     document.getElementById("new-project-form").style.display= "block";
   }
 
+  createProject() {
+    const project = new Project(
+      document.getElementById("project-name").value
+    );
+    this.projects.push(project);
+    this.activeProject = project;
+  }
+
   createProjectLink(project, index) {
     console.log(project);
     const projectButton = document.createElement("button");
     projectButton.type = "button";
-    projectButton.id = index;
+    projectButton.id = `project-${index}`;
     projectButton.classList.add("project-link");
     projectButton.textContent = project.title;
     return projectButton;
   }
+
+  /* Task List */
+
+  createTaskContainer() {
+    const taskContainer = document.createElement("div"); 
+    taskContainer.classList.add("task-container");
+
+    if (this.activeProject) {
+      taskContainer.appendChild(this.createTaskButton());
+      taskContainer.appendChild(this.createTaskForm());
+      taskContainer.appendChild(this.createTaskList());
+    }
+
+    return taskContainer;
+  }
+
+  createTaskButton() {
+    const addTask = document.createElement("button");
+    addTask.setAttribute("type", "button");
+    addTask.setAttribute("id", "new-task-form");
+    addTask.classList.add("btn");
+    addTask.textContent = "New Task";
+    addTask.addEventListener("click", this.openAddTask);
+    return addTask;
+  }
+
+  createTaskForm() {
+    const form = document.createElement("form");
+    form.classList.add("form-popup");
+    form.setAttribute("id", "task-form");
+    const name = document.createElement("input");
+    name.type = "text";
+    name.placeholder = "Task";
+    name.name = "task-name";
+    name.id = "task-name";
+    name.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        document.getElementById("create-task").click();
+      }
+    })
+    form.appendChild(name);
+    const buttons = document.createElement("div");
+    buttons.classList.add("form-buttons");
+    const createButton = document.createElement("button");
+    createButton.type = "button";
+    createButton.id = "create-task";
+    createButton.classList.add("task-form-button");
+    createButton.textContent = "Create";
+    createButton.addEventListener("click", () => {
+      this.createTask();
+      this.loadPage();
+    });
+    buttons.appendChild(createButton);
+    const cancelButton = document.createElement("button");
+    cancelButton.type = "button";
+    cancelButton.id = "close-form";
+    cancelButton.classList.add("task-form-button");
+    cancelButton.textContent = "Cancel";
+    cancelButton.addEventListener("click", this.closeTaskForm);
+    buttons.appendChild(cancelButton);
+    form.appendChild(buttons);
+    return form;
+  }
+
+  openAddTask() {
+    document.getElementById("task-name").value = "";
+    document.getElementById("task-form").style.display = "block";
+    document.getElementById("new-task-form").style.display= "none";
+  }
+
+  closeTaskForm() {
+    document.getElementById("task-form").style.display = "none";
+    document.getElementById("new-task-form").style.display= "block";
+  }
+
+  createTask() {
+    const taskName = document.getElementById("task-name").value;
+    this.activeProject.addTask(taskName);
+  }
+
+  createTaskList() {
+    const taskList = document.createElement("ul");
+    taskList.id = "task-list";
+    this.activeProject.tasks.forEach((task, index) => {
+      taskList.appendChild(this.displayTask(task, index));
+    });
+    return taskList;
+  }
+
+  displayTask(task, index) {
+    const taskDisplay = document.createElement("li");
+    taskDisplay.id = `task-${index}`;
+    taskDisplay.textContent= task.title;
+    return taskDisplay;
+  }
+
 }
