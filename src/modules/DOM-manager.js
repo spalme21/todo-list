@@ -129,7 +129,7 @@ export default class DOMManager {
   activateProject(e) {
     const index = e.target.dataset.index;
     this.activeProject = this.projects[index];
-    this.loadPage();
+    this.loadPage();  
   }
 
   /* Task List */
